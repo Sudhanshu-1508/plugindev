@@ -7,10 +7,17 @@
  * Text Domain: elementor
  */
 
-function myplugin_tst_shortcode( $atts ){
+function myplugin_tst_shortcode( $atts, $content='' ){
     $atts = shortcode_atts( array(
-        'title'=> 'Default Title',
-    ) , $atts);
-    return '<div class="test"><h2>' . $atts['title'] . '</he>test</div>';
+        'color' => '#0a0a0a',
+    ) , $atts); 
+    ob_start();
+    ?>
+    <div class="test">
+        <h2><?php echo $content; ?></h2>
+        <span style="color:<?php echo $atts['color'] ?>">testing</span>
+    </div>
+    <?php
+    return ob_get_clean();
 }
-add_shortcode('my-test-shortcode' , 'myplugin_tst_shortcode');
+add_shortcode('my-test-code' , 'myplugin_tst_shortcode');
