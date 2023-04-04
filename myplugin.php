@@ -26,6 +26,7 @@ require_once dirname(__FILE__) . '/includes/admin_settings.php';
 require_once dirname(__FILE__) . '/includes/news_content.php';
 require_once dirname(__FILE__) . '/includes/add_content.php';
 require_once dirname(__FILE__) . '/includes/test_api_calls.php';
+require_once dirname(__FILE__) . '/includes/welcome_screen.php';
 
 //function add_location_to_news( $content ){
 //    if( is_singular( 'news' ) )
