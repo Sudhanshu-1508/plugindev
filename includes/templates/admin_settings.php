@@ -8,6 +8,10 @@
                     <th><label for="news_related_title">Related News Title</label></th>
                     <td><input id="news_related_title" type="text" name="news_related_title" value="<?php echo esc_attr( get_option( 'custom_news_related_title', 'Related News' ))?>"></td>
                 </tr>
+                <tr>
+                    <th><label for="show_related">Show Related News?</label></th>
+                    <td><input id="show_related" type="checkbox" name="show_related" value="1"<?php checked(get_option( ' show_related', true)); ?>></td>
+                </tr>
             </tbody>
         </table>
         <p class="submit">

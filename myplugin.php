@@ -28,13 +28,32 @@ require_once dirname(__FILE__) . '/includes/add_content.php';
 require_once dirname(__FILE__) . '/includes/test_api_calls.php';
 require_once dirname(__FILE__) . '/includes/welcome_screen.php';
 
-//function add_location_to_news( $content ){
+//function add_news_meta_box(){
+//    add_meta_box( 'news_meta_box', 'News Location', 'render_news_location_meta_box', 'news', 'normal', 'low' );
+//}
+//add_action( 'add_meta_boxes_news', 'add_news_meta_box' );
+//
+//function render_news_location_meta_box ( $post ) {
+//
+//}
+//
+//function add_location_to_content( $content ){
 //    if( is_singular( 'news' ) )
-//    $content = ' <p class="news-loaction">Pune, India</p>' . $content;
+//    $content = ' <p class="news-loaction">Pune, India</p>' .  $content;
 //    return $content;
 //}
-//add_filter( 'the_content' , 'add_loaction_to_news' );
-//
+//add_filter( 'the_content' , 'add_loaction_to_content' );
 
 
+function add_posts_to_end_of_content ( $content ) {
+    if ( is_singular( 'news' )) {
+        $args = array(
+            'numberposts' => 3,
+            'post_type'=>'news',
+            'post_not_in' => array( get_the_ID() ),
+            'meta_key' => '_news_location',
+            'meta_value' => get_post_meta( get_the_ID(), '_news_location', true)
+        );
+    }
+}
 

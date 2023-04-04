@@ -33,6 +33,13 @@ class plugin_Admin{
 
         if( isset( $_POST['news_related_title'] ) )
             update_option( 'custom_news_related_title', sanitize_text_field($_POST['news_related_title'] ));
+
+        if( isset( $_POST['show_related'] ) )
+            update_option('show_related', true);
+        else
+        update_option('show_related', false);
+        
+        $this->show_success_message();
     }
 
     function show_success_message(){
