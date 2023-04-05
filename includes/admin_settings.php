@@ -26,13 +26,39 @@ class plugin_Admin{
         include dirname(__FILE__) . '/templates/admin_settings.php';
     }
 
+    function validate_settings(){
+        $valid= true;
+        if( !isset( $_POST['news_related_title'] ) || !trim( $_POST['news_related_title']) ) {
+            $this->show_error_message( ' invalid input');
+            $valid = false;
+        }
+        if( !isset( $_POST['news_related_email'] ) || ! is_email( $_POST['news_related_email']) ) {
+            $this->show_error_message( 'Email not valid');
+            $valid = false;
+        }
+        return $valid;
+    }
+
     function save_settings(){
         if( !wp_verify_nonce( $_POST['news_settings_nonce'], 'news-settings-save')){
          //   wp_die(' Security token invalid ');
         }
 
+        if( !current_user_can( 'manage_options')){
+            wp_die('No Permission');
+        }
+
+        if( !$this->validate_settings()){
+            return;
+        }
         if( isset( $_POST['news_related_title'] ) )
             update_option( 'custom_news_related_title', sanitize_text_field($_POST['news_related_title'] ));
+        
+        if( isset( $_POST['news_related_email'] ) && is_email( $_POST['news_related_email']) )
+            update_option( 'custom_news_related_email', sanitize_email($_POST['news_related_email'] ));
+
+        if( isset( $_POST['related_news_amount']))
+            update_option( 'related_news_amount', intval($_POST['related_news_amount']));
 
         if( isset( $_POST['show_related'] ) )
             update_option('show_related', true);
@@ -45,7 +71,14 @@ class plugin_Admin{
     function show_success_message(){
         ?>
         <div class="notice notice-success">
-            Settings Saved
+            <p>Settings Saved</p>
+        </div>
+        <?php
+    }
+    function show_error_message( $message ){
+        ?>
+        <div class="notice notice-error">
+            <p><?php echo esc_html( $message ); ?></p>
         </div>
         <?php
     }

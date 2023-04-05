@@ -1,11 +1,16 @@
 <?php
 
 /**
+ * 
+ * 
  * Plugin Name: myplugin
  * Author: Sudhanshu
  * Version: 1.0
- * Text Domain: elementor
+ * Text Domain: myplugin-sk
  */
+
+if( !defined("ABSPATH"))
+    die('No script');
 
 define( 'MYPLUGIN_FILE' , __FILE__ );
 define('THEME_VERSION', '1.0');
@@ -27,33 +32,46 @@ require_once dirname(__FILE__) . '/includes/news_content.php';
 require_once dirname(__FILE__) . '/includes/add_content.php';
 require_once dirname(__FILE__) . '/includes/test_api_calls.php';
 require_once dirname(__FILE__) . '/includes/welcome_screen.php';
-
-//function add_news_meta_box(){
-//    add_meta_box( 'news_meta_box', 'News Location', 'render_news_location_meta_box', 'news', 'normal', 'low' );
-//}
-//add_action( 'add_meta_boxes_news', 'add_news_meta_box' );
-//
-//function render_news_location_meta_box ( $post ) {
-//
-//}
-//
-//function add_location_to_content( $content ){
-//    if( is_singular( 'news' ) )
-//    $content = ' <p class="news-loaction">Pune, India</p>' .  $content;
-//    return $content;
-//}
-//add_filter( 'the_content' , 'add_loaction_to_content' );
+require_once dirname(__FILE__) . '/includes/news_meta_box.php';
 
 
-function add_posts_to_end_of_content ( $content ) {
-    if ( is_singular( 'news' )) {
-        $args = array(
-            'numberposts' => 3,
-            'post_type'=>'news',
-            'post_not_in' => array( get_the_ID() ),
-            'meta_key' => '_news_location',
-            'meta_value' => get_post_meta( get_the_ID(), '_news_location', true)
-        );
-    }
+function add_news_location_to_content( $content ){
+    if( is_singular( 'news' ) &&get_option('show_related' , true) )
+        $content = '<p class="news-location">' . esc_html(get_post_meta(get_the_ID(), '_news_location', true)) . '</p>' . $content;
+    return $content;
 }
+add_filter( 'the_content' , 'add_news_location_to_content' );
+
+
+
+
+function add_post_to_end_of_content( $content ){
+    global $post;
+    if( is_singular( 'news' ) ){
+        $args = array(
+            'numberposts' => intval( get_option( 'related_news_amount',3)),
+            'post_type'=>'news',
+            'post__not_in'=>array( get_the_ID( ) ),
+            'meta_key' => '_news_location',
+            'meta_value'=> get_post_meta( get_the_ID(), '_news_location', true)
+        );
+        $wp_query = new WP_Query ( $args );
+        if( $wp_query->have_posts( ) ){
+        ob_start();
+        ?>
+        <h3><?php echo esc_html(get_option( 'custom_news_related_title' , 'Related News' ))?></h3>
+        <ul class="latest-posts">
+          <?php while ($wp_query->have_posts() ) : $wp_query->the_post() ; ?>
+                <li><a href="<?php echo get_the_permalink( $wp_query->post->ID );?>"><?php echo the_title( $post->ID ); ?></li>
+                <?php endwhile; ?>
+            </ul>
+            <?php 
+            $content .= ob_get_clean();
+            wp_reset_postdata();
+    }
+    return $content;
+}
+}
+add_filter( 'the_content', 'add_post_to_end_of_content');
+
 
