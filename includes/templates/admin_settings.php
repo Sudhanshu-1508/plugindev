@@ -9,7 +9,7 @@
                     <td><input id="news_related_title" type="text" name="news_related_title" value="<?php echo esc_attr( get_option( 'custom_news_related_title', 'Related News' ))?>" required> </td>
                 </tr>
                 <tr>
-                    <th><label for="news_related_email"><?php echo esc_html (__( isset( $_POST['news_related_email']) ? $_POST['news_related_email'] : get_option('news_related_email', '' ) ) ) ?></label></th>
+                    <th><label for="news_related_email"><?php echo esc_html (__( isset( $_POST['news_related_email']) ? $_POST['news_related_email'] : get_option('news_related_email', '' ) ) ) ?>News Related Email</label></th>
                     <td><input id="news_related_email" type="email" name="news_related_email" value="<?php echo esc_attr( get_option( 'custom_news_related_email', '' ))?>" required></td>
                 </tr>
                 <tr>
